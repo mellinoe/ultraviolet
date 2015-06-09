@@ -38,7 +38,11 @@
     <Copy SourceFiles="%(PublishedRuntimeItems.Identity)" DestinationFiles="$(RuntimePath)\%(DestinationRelativePath)" SkipUnchangedFiles="true" />
     <Message Text="Published $(AssemblyName) executable to $(RuntimePath)" Importance="high" />
 
-    <WriteLinesToFile File="$(ProjectDir)Launch-$(AssemblyName).cmd" Lines="%~dp0_LaunchExe.cmd $(AssemblyName) %*" Overwrite="true" />
+    <PropertyGroup>
+      <LaunchExeLines1>@echo off</LaunchExeLines1>
+      <LaunchExeLines2>%~dp0_LaunchExe.cmd $(AssemblyName) %*</LaunchExeLines2>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(ProjectDir)Launch-$(AssemblyName).cmd" Lines="$(LaunchExeLines1);$(LaunchExeLines2)" Overwrite="true" />
   </Target>
 
 </Project>
