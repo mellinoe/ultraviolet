@@ -1,8 +1,8 @@
 syntax: glob
 
-### NetCoreGameEngine-specific ###
+### .NET Core exe Build Artifacts ###
 
-Play*.cmd
+Launch*.cmd
 *Runtime
 !Runtime/README.txt
 
