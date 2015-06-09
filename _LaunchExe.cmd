@@ -22,7 +22,6 @@ if exist %runtimedir%\CoreRun.exe (
   if exist %runtimedir%\%exename%.exe (
   goto :InvokeExe
   )
-  set ERRORLEVEL=1
   echo Error, executable not found: %runtimedir%\%exename%.exe
   exit /b
 )
