@@ -28,7 +28,7 @@ namespace TwistedLogik.Ultraviolet.Content
             Contract.Require(asm, "asm");
 
             var importers = from type in asm.GetTypes()
-                            let attrs = type.GetCustomAttributes(typeof(ContentImporterAttribute), false).Cast<ContentImporterAttribute>()
+                            let attrs = type.GetTypeInfo().GetCustomAttributes(typeof(ContentImporterAttribute), false).Cast<ContentImporterAttribute>()
                             where attrs != null && attrs.Count() > 0
                             select new { Type = type, Attributes = attrs };
 
@@ -127,11 +127,11 @@ namespace TwistedLogik.Ultraviolet.Content
             var current = type;
             while (current != null)
             {
-                if (current.IsGenericType && current.GetGenericTypeDefinition() == typeof(ContentImporter<>))
+                if (current.GetTypeInfo().IsGenericType && current.GetGenericTypeDefinition() == typeof(ContentImporter<>))
                 {
                     return current;
                 }
-                current = current.BaseType;
+                current = current.GetTypeInfo().BaseType;
             }
             return null;
         }

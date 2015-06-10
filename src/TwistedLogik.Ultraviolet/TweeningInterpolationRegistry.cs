@@ -35,8 +35,12 @@ namespace TwistedLogik.Ultraviolet
         /// <typeparam name="T">The type for which to register a default interpolator.</typeparam>
         public void RegisterDefault<T>()
         {
+#if NETCORE
+            var interpolateMethod = typeof(T).GetMethod("Interpolate", new Type[] { typeof(T), typeof(Single) });
+#else
             var interpolateMethod = typeof(T).GetMethod("Interpolate",
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(T), typeof(Single) }, null);
+#endif
 
             if (interpolateMethod == null)
             {
@@ -66,7 +70,7 @@ namespace TwistedLogik.Ultraviolet
         {
             interpolators[typeof(T)] = interpolator;
 
-            if (typeof(T).IsValueType)
+            if (typeof(T).GetTypeInfo().IsValueType)
             {
                 miRegisterNullable.MakeGenericMethod(typeof(T))
                     .Invoke(this, new Object[] { interpolator });

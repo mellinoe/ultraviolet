@@ -13,7 +13,12 @@ namespace TwistedLogik.Ultraviolet
         /// </summary>
         static UltravioletStrings()
         {
+#if NETCORE
+            var asm = typeof(UltravioletStrings).GetTypeInfo().Assembly;
+#else
             var asm = Assembly.GetExecutingAssembly();
+#endif
+
             using (var stream = asm.GetManifestResourceStream("TwistedLogik.Ultraviolet.Resources.Strings.xml"))
             {
                 StringDatabase.LoadFromStream(stream);

@@ -40,9 +40,9 @@ namespace TwistedLogik.Ultraviolet.Input
             {
                 var instance = (T)ctor.Invoke(new object[] { uv });
                 instance.CreateActions();
-                uv.GetInput().Updating += (s, t) => 
-                { 
-                    instance.Update(); 
+                uv.GetInput().Updating += (s, t) =>
+                {
+                    instance.Update();
                 };
                 return instance;
             });
@@ -102,7 +102,7 @@ namespace TwistedLogik.Ultraviolet.Input
             Contract.RequireNotEmpty(path, "path");
             Contract.EnsureNotDisposed(this, Disposed);
 
-            SerializeToXml().Save(path);
+            SerializeToXml().Save(File.OpenRead(path));
         }
 
         /// <summary>
@@ -391,7 +391,11 @@ namespace TwistedLogik.Ultraviolet.Input
                 throw new InvalidOperationException();
 
             var type = Type.GetType(typeName);
+#if NETCORE
+            var ctor = type.GetConstructor(new Type[] { typeof(UltravioletContext), typeof(XElement) });
+#else
             var ctor = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(UltravioletContext), typeof(XElement) }, null);
+#endif
             if (ctor == null)
                 throw new InvalidOperationException(UltravioletStrings.NoValidConstructor.Format(typeName));
 

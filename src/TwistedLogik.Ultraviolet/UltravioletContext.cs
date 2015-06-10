@@ -286,7 +286,11 @@ namespace TwistedLogik.Ultraviolet
                         break;
                     }
                     ProcessWorkItems();
+#if NETCORE
+                    Thread.Sleep(0);
+#else
                     Thread.Yield();
+#endif
                 }
             }
         }
@@ -478,6 +482,8 @@ namespace TwistedLogik.Ultraviolet
 
 #if ANDROID
                 return UltravioletPlatform.Android;
+#elif NETCORE
+                return UltravioletPlatform.Windows;
 #else
                 switch (Environment.OSVersion.Platform)
                 {
@@ -643,7 +649,7 @@ namespace TwistedLogik.Ultraviolet
             Contract.Require(asm, "asm");
 
             var initializerTypes = from t in asm.GetTypes()
-                                   where t.IsClass && !t.IsAbstract && typeof(IUltravioletFactoryInitializer).IsAssignableFrom(t)
+                                   where t.GetTypeInfo().IsClass && !t.GetTypeInfo().IsAbstract && typeof(IUltravioletFactoryInitializer).IsAssignableFrom(t)
                                    select t;
 
             foreach (var initializerType in initializerTypes)
@@ -788,8 +794,8 @@ namespace TwistedLogik.Ultraviolet
         /// <param name="configuration">The Ultraviolet Framework configuration settings for this context.</param>
         private void InitializeFactory(UltravioletConfiguration configuration)
         {
-            var asmCore = typeof(UltravioletContext).Assembly;
-            var asmImpl = GetType().Assembly;
+            var asmCore = typeof(UltravioletContext).GetTypeInfo().Assembly;
+            var asmImpl = GetType().GetTypeInfo().Assembly;
 
             InitializeFactoryMethodsInAssembly(asmCore);
             InitializeFactoryMethodsInAssembly(asmImpl);
@@ -810,11 +816,19 @@ namespace TwistedLogik.Ultraviolet
                 {
                     case UltravioletPlatform.Windows:
                     case UltravioletPlatform.Linux:
+#if NETCORE
+                        shim = Assembly.Load(new AssemblyName("TwistedLogik.Ultraviolet.Desktop"));
+#else
                         shim = Assembly.LoadFrom("TwistedLogik.Ultraviolet.Desktop.dll");
+#endif
                         break;
 
                     case UltravioletPlatform.Android:
+#if NETCORE
+                        shim = Assembly.Load(new AssemblyName("TwistedLogik.Ultraviolet.Android"));
+#else
                         shim = Assembly.Load("TwistedLogik.Ultraviolet.Android.dll");
+#endif
                         break;
 
                     default:
@@ -844,7 +858,7 @@ namespace TwistedLogik.Ultraviolet
             Assembly asm;
             try
             {
-                asm = Assembly.Load(configuration.ViewProviderAssembly);
+                asm = Assembly.Load(new AssemblyName(configuration.ViewProviderAssembly));
                 InitializeFactoryMethodsInAssembly(asm);
             }
             catch (Exception e)

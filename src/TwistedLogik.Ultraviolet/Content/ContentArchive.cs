@@ -121,7 +121,7 @@ namespace TwistedLogik.Ultraviolet.Content
 
             var components = path.Split(DirectorySeparators);
             var rootname   = components.First();
-            var root       = roots.SingleOrDefault(x => String.Equals(x.Name, rootname, StringComparison.InvariantCultureIgnoreCase));
+            var root       = roots.SingleOrDefault(x => String.Equals(x.Name, rootname, StringComparison.CurrentCultureIgnoreCase));
 
             if (root == null)
             {
@@ -154,7 +154,7 @@ namespace TwistedLogik.Ultraviolet.Content
                 }
 
                 var match = (ContentArchiveNode)current.Children.SingleOrDefault(x => 
-                    String.Equals(x.Name, component, StringComparison.InvariantCultureIgnoreCase));
+                    String.Equals(x.Name, component, StringComparison.CurrentCultureIgnoreCase));
 
                 if (match == null)
                 {

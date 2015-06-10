@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TwistedLogik.Nucleus;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.Content
 {

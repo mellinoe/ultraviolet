@@ -28,7 +28,7 @@ namespace TwistedLogik.Ultraviolet.Content
             Contract.Require(asm, "asm");
 
             var processors = from type in asm.GetTypes()
-                             let attrs = type.GetCustomAttributes(typeof(ContentProcessorAttribute), false).Cast<ContentProcessorAttribute>()
+                             let attrs = type.GetTypeInfo().GetCustomAttributes(typeof(ContentProcessorAttribute), false).Cast<ContentProcessorAttribute>()
                              where attrs != null && attrs.Count() > 0
                              select new { Type = type, Attribute = attrs.First() };
 
@@ -132,11 +132,11 @@ namespace TwistedLogik.Ultraviolet.Content
             var current = type;
             while (current != null)
             {
-                if (current.IsGenericType && current.GetGenericTypeDefinition() == typeof(ContentProcessor<,>))
+                if (current.GetTypeInfo().IsGenericType&& current.GetGenericTypeDefinition() == typeof(ContentProcessor<,>))
                 {
                     return current;
                 }
-                current = current.BaseType;
+                current = current.GetTypeInfo().BaseType;
             }
             return null;
         }

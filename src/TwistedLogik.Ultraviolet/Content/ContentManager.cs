@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using TwistedLogik.Nucleus;
 using TwistedLogik.Nucleus.Xml;
 using TwistedLogik.Ultraviolet.Platform;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.Content
 {
@@ -795,7 +796,7 @@ namespace TwistedLogik.Ultraviolet.Content
                 using (var writer = new BinaryWriter(stream))
                 {
                     var processorType = processor.GetType();
-                    var processorTypeName = String.Format("{0}, {1}", processorType.FullName, processorType.Assembly.GetName().Name);
+                    var processorTypeName = String.Format("{0}, {1}", processorType.FullName, processorType.GetTypeInfo().Assembly.GetName().Name);
 
                     writer.Write("UVC0");
                     writer.Write(processorTypeName);
@@ -849,7 +850,7 @@ namespace TwistedLogik.Ultraviolet.Content
                 from file in fileSystemService.ListFiles(assetPath, assetNoExtension + ".*")
                 let fileExtension = Path.GetExtension(file)
                 where 
-                    includePreprocessed || !fileExtension.Equals(PreprocessedFileExtension, StringComparison.InvariantCultureIgnoreCase)
+                    includePreprocessed || !fileExtension.Equals(PreprocessedFileExtension, StringComparison.CurrentCultureIgnoreCase)
                 select file;
 
             var filteredExtension = extension;
@@ -857,7 +858,7 @@ namespace TwistedLogik.Ultraviolet.Content
                 from assetMatch in assetMatches
                 let assetExtension = Path.GetExtension(assetMatch)
                 where
-                    filteredExtension == null || assetExtension.Equals(filteredExtension, StringComparison.InvariantCultureIgnoreCase)
+                    filteredExtension == null || assetExtension.Equals(filteredExtension, StringComparison.CurrentCultureIgnoreCase)
                 select assetMatch;
 
             if (filteredMatches.Count() > 1)

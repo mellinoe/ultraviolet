@@ -59,12 +59,6 @@ namespace System.Reflection
             return interfaces.SingleOrDefault(t => t.FullName == fullInterfaceName);
         }
 
-
-        public static bool IsAssignableFrom(this Type t, Type other)
-        {
-            return t.GetTypeInfo().IsAssignableFrom(other.GetTypeInfo());
-        }
-
         public static bool IsAssignableFrom(this TypeInfo t, Type other)
         {
             return t.IsAssignableFrom(other.GetTypeInfo());

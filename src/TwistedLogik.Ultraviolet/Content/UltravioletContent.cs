@@ -26,15 +26,15 @@ namespace TwistedLogik.Ultraviolet.Content
         {
             Contract.EnsureNot(registered, UltravioletStrings.ContentHandlersAlreadyRegistered);
 
-            var asmUltravioletCore = typeof(UltravioletContext).Assembly;
-            var asmUltravioletImpl = Ultraviolet.GetType().Assembly;
+            var asmUltravioletCore = typeof(UltravioletContext).GetTypeInfo().Assembly;
+            var asmUltravioletImpl = Ultraviolet.GetType().GetTypeInfo().Assembly;
 
-            var asmUltravioletPlatform = Ultraviolet.GetPlatform().GetType().Assembly;
-            var asmUltravioletContent  = Ultraviolet.GetContent().GetType().Assembly;
-            var asmUltravioletGraphics = Ultraviolet.GetGraphics().GetType().Assembly;
-            var asmUltravioletAudio    = Ultraviolet.GetAudio().GetType().Assembly;
-            var asmUltravioletInput    = Ultraviolet.GetInput().GetType().Assembly;
-            var asmUltravioletUI       = Ultraviolet.GetUI().GetType().Assembly;
+            var asmUltravioletPlatform = Ultraviolet.GetPlatform().GetType().GetTypeInfo().Assembly;
+            var asmUltravioletContent  = Ultraviolet.GetContent().GetType().GetTypeInfo().Assembly;
+            var asmUltravioletGraphics = Ultraviolet.GetGraphics().GetType().GetTypeInfo().Assembly;
+            var asmUltravioletAudio    = Ultraviolet.GetAudio().GetType().GetTypeInfo().Assembly;
+            var asmUltravioletInput    = Ultraviolet.GetInput().GetType().GetTypeInfo().Assembly;
+            var asmUltravioletUI       = Ultraviolet.GetUI().GetType().GetTypeInfo().Assembly;
 
             var assemblies = new[] { 
                 asmUltravioletCore, 
