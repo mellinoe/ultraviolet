@@ -89,7 +89,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
             gridLength = default(GridLength);
 
-            if (String.Equals("Auto", s, StringComparison.InvariantCultureIgnoreCase))
+            if (String.Equals("Auto", s, StringComparison.CurrentCultureIgnoreCase))
             {
                 gridLength = GridLength.Auto;
                 return true;

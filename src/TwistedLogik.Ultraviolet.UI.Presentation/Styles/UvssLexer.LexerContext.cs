@@ -332,7 +332,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
 
                     var type = GetLastTokenValue(output);
 
-                    if (String.Equals("set", type, StringComparison.InvariantCultureIgnoreCase))
+                    if (String.Equals("set", type, StringComparison.CurrentCultureIgnoreCase))
                     {
                         ConsumeAllWhiteSpaceAndComments(input, output, ref line, ref ix);
 

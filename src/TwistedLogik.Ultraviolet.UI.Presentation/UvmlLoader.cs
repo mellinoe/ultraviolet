@@ -21,9 +21,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// </summary>
         static UvmlLoader()
         {
-            miBindValue     = typeof(DependencyObject).GetMethod("BindValue");
+            miBindValue = typeof(DependencyObject).GetMethod("BindValue");
             miSetLocalValue = typeof(DependencyObject).GetMethod("SetLocalValue");
-            miGetValue      = typeof(DependencyObject).GetMethod("GetValue");
+            miGetValue = typeof(DependencyObject).GetMethod("GetValue");
         }
 
         /// <summary>
@@ -34,8 +34,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns>The <see cref="PresentationFoundationView"/> that was loaded from the specified XML element.</returns>
         public static PresentationFoundationView Load(UltravioletContext uv, XElement xml)
         {
-            var viewModelType      = default(Type);
-            var viewModelTypeAttr  = xml.Attribute("ViewModelType");
+            var viewModelType = default(Type);
+            var viewModelTypeAttr = xml.Attribute("ViewModelType");
             if (viewModelTypeAttr != null)
             {
                 viewModelType = Type.GetType(viewModelTypeAttr.Value, false);
@@ -45,7 +45,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 }
             }
 
-            var view    = new PresentationFoundationView(uv, viewModelType);
+            var view = new PresentationFoundationView(uv, viewModelType);
             var context = new InstantiationContext(uv, viewModelType);
 
             var fe = view.LayoutRoot as FrameworkElement;
@@ -86,18 +86,18 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (contentElement == null)
                 return;
 
-            var uv      = userControl.Ultraviolet;
+            var uv = userControl.Ultraviolet;
             var context = new InstantiationContext(uv, viewModelType, userControl, bindingContext);
 
             userControl.BeginInit();
             userControl.ComponentTemplateNamescope.Clear();
 
-            var content           = InstantiateElement(uv, null, contentElement, context);
+            var content = InstantiateElement(uv, null, contentElement, context);
             var contentObjectTree = BuildObjectTree(uv, contentElement, content, context);
 
             userControl.ComponentRoot = content;
             userControl.PopulateFieldsFromRegisteredElements();
-            
+
             PopulateObjectTree(uv, contentObjectTree, context);
         }
 
@@ -108,7 +108,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <param name="template">The component template that specifies the control's component layout.</param>
         public static void LoadComponentTemplate(Control control, XDocument template)
         {
-            var uv      = control.Ultraviolet;
+            var uv = control.Ultraviolet;
             var context = new InstantiationContext(uv, null, control, null);
 
             control.ComponentTemplateNamescope.Clear();
@@ -119,7 +119,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (rootElement == null)
                 return;
 
-            var componentRoot           = InstantiateElement(uv, null, rootElement, context);
+            var componentRoot = InstantiateElement(uv, null, rootElement, context);
             var componentRootObjectTree = BuildObjectTree(uv, rootElement, componentRoot, context);
 
             control.ComponentRoot = componentRoot;
@@ -148,11 +148,11 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 if (IsReservedAttribute(xmlAttrName))
                     continue;
 
-                var value          = xmlAttr.Value;
-                var name           = default(String);
-                var attachment     = default(String);
+                var value = xmlAttr.Value;
+                var name = default(String);
+                var attachment = default(String);
                 var attachmentType = default(Type);
-                var examinedType   = uiElement.GetType();
+                var examinedType = uiElement.GetType();
 
                 if (IsAttachedPropertyOrEvent(xmlAttrName, out attachment, out name))
                 {
@@ -214,13 +214,13 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns>The interface element that was instantiated.</returns>
         private static UIElement InstantiateElement(UltravioletContext uv, UIElement parent, XElement xmlElement, InstantiationContext context)
         {
-            var instance  = default(UIElement);            
-            var name      = xmlElement.AttributeValueString("Name");
-            var classes   = xmlElement.AttributeValueString("Class");
+            var instance = default(UIElement);
+            var name = xmlElement.AttributeValueString("Name");
+            var classes = xmlElement.AttributeValueString("Class");
             var classList = (classes == null) ? Enumerable.Empty<String>() : classes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             var typeName = xmlElement.Name.LocalName;
-            if (String.Equals("ItemsPanel", typeName, StringComparison.InvariantCulture))
+            if (String.Equals("ItemsPanel", typeName, StringComparison.CurrentCulture))
             {
                 var itemPresenterControl = context.TemplatedParent as ItemsControl;
                 if (itemPresenterControl == null)
@@ -297,7 +297,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             isAttachedEvent = false;
 
             var attachedContainer = String.Empty;
-            var attachedProperty  = String.Empty;
+            var attachedProperty = String.Empty;
             if (IsAttachedPropertyOrEvent(name, out attachedContainer, out attachedProperty))
             {
                 Type attachedContainerType;
@@ -358,7 +358,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns>The <see cref="PropertyInfo"/> for the specified property.</returns>
         private static PropertyInfo FindElementStandardProperty(UIElement uiElement, String name, BindingFlags bindingAttr)
         {
-            var standardProperty = uiElement.GetType().GetProperty(name,  bindingAttr);
+            var standardProperty = uiElement.GetType().GetProperty(name, bindingAttr);
             if (standardProperty == null)
                 throw new InvalidOperationException(PresentationStrings.EventOrPropertyDoesNotExist.Format(name, uiElement.GetType()));
 
@@ -433,7 +433,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns><c>true</c> if the specified type represents an enumerable collection; otherwise, <c>false</c>.</returns>
         private static Boolean IsTypeAnEnumerableCollection(Type enumType, out Type itemType)
         {
-            var ifaces = enumType.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            var ifaces = enumType.GetInterfaces().Where(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>));
             if (ifaces.Count() > 1 || !ifaces.Any())
             {
                 itemType = null;
@@ -444,7 +444,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             itemType = iface.GetGenericArguments()[0];
             return true;
         }
-        
+
         /// <summary>
         /// Resolves dependency properties when loading objects through the Nucleus object serializer.
         /// </summary>
@@ -530,7 +530,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             var dpAliasedContent = DependencyProperty.FindByName(alias, templateType);
             if (dpAliasedContent != null)
             {
-                contentPresenter.BindValue(ContentPresenter.ContentProperty, templateType, 
+                contentPresenter.BindValue(ContentPresenter.ContentProperty, templateType,
                     "{{" + dpAliasedContent.Name + "}}");
             }
 
@@ -554,7 +554,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <param name="xmlElement">The XML element that represents the UI element.</param>
         /// <param name="context">The current instantiation context.</param>
         private static void PopulateElementPropertiesFromElements(UltravioletContext uv, UIElement uiElement, XElement xmlElement, InstantiationContext context)
-        {            
+        {
             foreach (var element in xmlElement.Elements())
             {
                 var elementName = element.Name.LocalName;
@@ -562,9 +562,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                     continue;
 
                 var propDelimIndex = elementName.IndexOf('.');
-                var propOwnerName  = elementName.Substring(0, propDelimIndex);
-                var propName       = elementName.Substring(propDelimIndex + 1);
-                var isAttached     = !String.Equals(propOwnerName, uiElement.UvmlName, StringComparison.InvariantCulture);
+                var propOwnerName = elementName.Substring(0, propDelimIndex);
+                var propName = elementName.Substring(propDelimIndex + 1);
+                var isAttached = !String.Equals(propOwnerName, uiElement.UvmlName, StringComparison.CurrentCulture);
                 if (isAttached)
                     propName = elementName;
 
@@ -634,10 +634,10 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                         BindOrSetDependencyProperty(uiElement, dprop, attr.Value, context);
                     }
                     break;
-                
+
                 case UvmlAttributeType.RoutedEvent:
                     {
-                        var eventID      = (RoutedEvent)attr.Identifier;
+                        var eventID = (RoutedEvent)attr.Identifier;
                         var eventHandler = CreateEventDelegate(uiElement, eventID.DelegateType, attr.Value, context);
                         uiElement.AddHandler(eventID, eventHandler);
                     }
@@ -645,7 +645,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
                 case UvmlAttributeType.FrameworkProperty:
                     {
-                        var propInfo  = (PropertyInfo)attr.Identifier;
+                        var propInfo = (PropertyInfo)attr.Identifier;
                         var propValue = ResolveValue(uiElement, attr.Value, propInfo.PropertyType);
                         propInfo.SetValue(uiElement, propValue, null);
                     }
@@ -653,7 +653,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
                 case UvmlAttributeType.FrameworkEvent:
                     {
-                        var eventInfo    = (EventInfo)attr.Identifier;
+                        var eventInfo = (EventInfo)attr.Identifier;
                         var eventHandler = CreateEventDelegate(uiElement, eventInfo.EventHandlerType, attr.Value, context);
                         eventInfo.AddEventHandler(uiElement, eventHandler);
                     }
@@ -720,8 +720,12 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             var existingValue = (IEnumerable)GetPropertyValue(context.Ultraviolet, uiElement, name);
             if (existingValue != null)
             {
+#if NETCORE
+                var clearMethod = existingValue.GetType().GetMethod("Clear", Type.EmptyTypes);
+#else
                 var clearMethod = existingValue.GetType().GetMethod("Clear", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
                     null, Type.EmptyTypes, null);
+#endif
 
                 if (clearMethod == null)
                     throw new InvalidOperationException(PresentationStrings.CollectionCannotBeCleared.Format(name));
@@ -733,9 +737,14 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             var enumInstance = existingValue;
             if (enumInstance == null)
             {
-                var ctor = 
+                var ctor =
+#if NETCORE
+ enumType.GetConstructor(new[] { typeof(IEnumerable<>).MakeGenericType(itemType) }) ??
+                    enumType.GetConstructor(Type.EmptyTypes);
+#else
                     enumType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(IEnumerable<>).MakeGenericType(itemType) }, null) ??
                     enumType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+#endif
 
                 if (ctor == null)
                     throw new InvalidOperationException(UltravioletStrings.NoValidConstructor.Format(enumType.Name));
@@ -767,9 +776,14 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <param name="itemType">The type of item contained by the enumerable collection.</param>
         private static void PopulateEnumerableCollectionItems(IEnumerable collection, IEnumerable items, Type enumType, Type itemType)
         {
-            var addMethod = 
-                enumType.GetMethod("Add", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { itemType }, null) ?? 
+            var addMethod =
+#if NETCORE
+                enumType.GetMethod("Add", new[] { itemType }) ??
+                enumType.GetMethod("Add", new[] { typeof(Object) });
+#else
+                enumType.GetMethod("Add", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { itemType }, null) ??
                 enumType.GetMethod("Add", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(Object) }, null);
+#endif
 
             if (addMethod == null)
                 throw new InvalidOperationException(PresentationStrings.CollectionHasNoAddMethod.Format(enumType.Name));
@@ -837,9 +851,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         {
             try
             {
-                var type          = dprop.PropertyType;
+                var type = dprop.PropertyType;
                 var resolvedValue = ResolveValue(dobj as UIElement, value, type);
-                
+
                 miSetLocalValue.MakeGenericMethod(type).Invoke(dobj, new Object[] { dprop, resolvedValue });
             }
             catch (FormatException e)
@@ -927,7 +941,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 var propInfo = FindElementStandardProperty(uiElement, name);
                 if (!propInfo.CanRead)
                     throw new InvalidOperationException(PresentationStrings.PropertyHasNoGetter.Format(name));
-                
+
                 return propInfo.GetValue(uiElement, null);
             }
         }
@@ -943,7 +957,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         {
             if (value == "{{null}}")
             {
-                return type.IsValueType ? Activator.CreateInstance(type) : null;
+                return type.GetTypeInfo().IsValueType ? Activator.CreateInstance(type) : null;
             }
 
             var frameworkElement = uiElement as FrameworkElement;
@@ -971,13 +985,13 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         private static Boolean IsAttachedPropertyOrEvent(String name, out String container, out String property)
         {
             container = null;
-            property  = null;
+            property = null;
 
             var delimiterIx = name.IndexOf('.');
             if (delimiterIx >= 0)
             {
                 container = name.Substring(0, delimiterIx);
-                property  = name.Substring(delimiterIx + 1);
+                property = name.Substring(delimiterIx + 1);
 
                 return true;
             }
@@ -1040,7 +1054,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns>The object tree's root object.</returns>
         private static UvmlObject BuildObjectTree(UltravioletContext uv, UvmlObject root, InstantiationContext context)
         {
-            var debugName   = root.Instance.GetType().Name;
+            var debugName = root.Instance.GetType().Name;
             var childrenXml = root.Xml.Elements().Where(x => !ElementNameRepresentsProperty(x));
 
             // Single child
@@ -1056,7 +1070,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 var childXml = childrenXml.SingleOrDefault();
                 if (childXml != null)
                 {
-                    var child       = InstantiateElement(uv, root.Instance, childXml, context);
+                    var child = InstantiateElement(uv, root.Instance, childXml, context);
                     var childObject = new UvmlObject(childXml, child);
 
                     root.Children.Add(childObject);
@@ -1071,7 +1085,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             {
                 foreach (var childXml in childrenXml)
                 {
-                    var child       = InstantiateElement(uv, root.Instance, childXml, context);
+                    var child = InstantiateElement(uv, root.Instance, childXml, context);
                     var childObject = new UvmlObject(childXml, child);
 
                     root.Children.Add(childObject);
@@ -1096,7 +1110,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <param name="context">The current instantiation context.</param>
         private static void PopulateObjectTree(UltravioletContext uv, UvmlObject root, InstantiationContext context)
         {
-            var bindingContext        = root.Xml.AttributeValueString("BindingContext");
+            var bindingContext = root.Xml.AttributeValueString("BindingContext");
             var bindingContextDefined = (bindingContext != null);
             if (bindingContextDefined)
             {

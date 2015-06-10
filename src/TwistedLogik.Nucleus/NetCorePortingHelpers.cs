@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 
 // Small porting helpers to help my laziness
@@ -83,6 +84,61 @@ namespace System.Reflection
             {
                 throw new NotImplementedException(); // Not sure any others are used.
             }
+        }
+    }
+}
+
+namespace System.ComponentModel
+{
+    public class DefaultPropertyAttribute : Attribute
+    {
+        private string _value;
+
+        public DefaultPropertyAttribute(string value)
+        {
+            _value = value;
+        }
+
+        public string Name { get { return _value; } }
+    }
+
+    public interface ISupportInitialize
+    {
+        void BeginInit();
+
+        void EndInit();
+    }
+
+    public static class TypeConverterExtensions
+    {
+        public static bool IsValid(this TypeConverter @this, object value)
+        {
+            return IsValid(@this, null, value);
+        }
+
+        public static bool IsValid(this TypeConverter @this, ITypeDescriptorContext context, object value)
+        {
+            bool isValid = true;
+            try
+            {
+                // Because null doesn't have a type, so we couldn't pass this to CanConvertFrom.
+                // Meanwhile, we couldn't silence null value here, such as type converter like
+                // NullableConverter would consider null value as a valid value.
+                if (value == null || @this.CanConvertFrom(context, value.GetType()))
+                {
+                    @this.ConvertFrom(context, CultureInfo.CurrentCulture, value);
+                }
+                else
+                {
+                    isValid = false;
+                }
+            }
+            catch
+            {
+                isValid = false;
+            }
+
+            return isValid;
         }
     }
 }

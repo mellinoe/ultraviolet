@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TwistedLogik.Nucleus;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -27,7 +28,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                     dobj.InitializeDependencyProperty(kvp.Value);
                 }
 
-                type = type.BaseType;
+                type = type.GetTypeInfo().BaseType;
             }
         }
 
@@ -145,7 +146,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 {
                     return property;
                 }
-                type = type.BaseType;
+                type = type.GetTypeInfo().BaseType;
             }
             return null;
         }
@@ -171,7 +172,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 {
                     return property;
                 }
-                type = type.BaseType;
+                type = type.GetTypeInfo().BaseType;
             }
             return null;
         }

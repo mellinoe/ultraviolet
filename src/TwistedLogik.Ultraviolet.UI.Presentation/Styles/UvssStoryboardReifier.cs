@@ -4,6 +4,7 @@ using System.Linq;
 using TwistedLogik.Nucleus;
 using TwistedLogik.Nucleus.Data;
 using TwistedLogik.Ultraviolet.UI.Presentation.Animations;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
 {
@@ -230,7 +231,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
         /// <returns>The animation type which corresponds to the specified type of value.</returns>
         private static Type GetAnimationType(Type type)
         {
-            var nullable = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            var nullable = type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
             if (nullable)
                 type = type.GetGenericArguments()[0];
 

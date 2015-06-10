@@ -43,10 +43,20 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         static BindingExpressions()
         {
             miReferenceEquals = typeof(Object).GetMethod("ReferenceEquals", new[] { typeof(Object), typeof(Object) });
+#if NETCORE
+            miObjectEquals = typeof(Object).GetMethod("Equals", new[] { typeof(Object), typeof(Object) });
+#else
             miObjectEquals    = typeof(Object).GetMethod("Equals", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(Object), typeof(Object) }, null);
-            miNullableEquals  = typeof(Nullable).GetMethods().Where(x => x.Name == "Equals" && x.IsGenericMethod).Single();
+#endif
+            miNullableEquals = typeof(Nullable).GetMethods().Where(x => x.Name == "Equals" && x.IsGenericMethod).Single();
+#if NETCORE
+            miCreateSimpleGet = typeof(BindingExpressions).GetMethod("CreateGetterForSimpleDependencyProperty", new[] { typeof(DependencyProperty) });
+            miCreateSimpleSet = typeof(BindingExpressions).GetMethod("CreateSetterForSimpleDependencyProperty", new[] { typeof(DependencyProperty) });
+#else
             miCreateSimpleGet = typeof(BindingExpressions).GetMethod("CreateGetterForSimpleDependencyProperty", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(DependencyProperty) }, null);
             miCreateSimpleSet = typeof(BindingExpressions).GetMethod("CreateSetterForSimpleDependencyProperty", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(DependencyProperty) }, null);
+#endif
+
         }
 
         /// <summary>
@@ -65,7 +75,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
             return !braces || expression.StartsWith("{{") && expression.EndsWith("}}");
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the specified binding expression is 
         /// globally-scoped using the :: operator.
@@ -126,7 +136,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (!IsBindingExpression(expression, braces))
                 throw new ArgumentException(PresentationStrings.InvalidBindingExpression.Format(expression));
 
-            var path       = GetBindingMemberPathPartInternal(expression, braces);
+            var path = GetBindingMemberPathPartInternal(expression, braces);
             var components = path.Split('.');
 
             return components;
@@ -154,13 +164,13 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
             var fmt1 = GetBindingFormatStringPartInternal(expression1, braces);
             var fmt2 = GetBindingFormatStringPartInternal(expression2, braces);
-            
+
             var path1 = GetBindingMemberPathPartInternal(expression1, braces);
             var path2 = GetBindingMemberPathPartInternal(expression2, braces);
 
             var combinedPath = path1 + "." + path2;
-            var combinedFmt  = fmt2 ?? fmt1;
-            var combinedExp  = String.Format((combinedFmt == null) ? "{0}" : "{0} | {1}", combinedPath, combinedFmt);
+            var combinedFmt = fmt2 ?? fmt1;
+            var combinedExp = String.Format((combinedFmt == null) ? "{0}" : "{0} | {1}", combinedPath, combinedFmt);
 
             return braces ? "{{" + combinedExp + "}}" : combinedExp;
         }
@@ -214,9 +224,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 if (members == null || !members.Any())
                     return null;
 
-                var member = members.Where(x => 
-                    x.MemberType == MemberTypes.Property ||
-                    x.MemberType == MemberTypes.Field).FirstOrDefault() ?? members.First();
+                var member = members.Where(x =>
+                    x.MemberType() == MemberTypes.Property ||
+                    x.MemberType() == MemberTypes.Field).FirstOrDefault() ?? members.First();
 
                 currentType = GetMemberType(member);
             }
@@ -332,7 +342,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
                 if (!comparerRegistry.TryGetValue(type, out typeComparer))
                 {
-                    if (type.IsClass)
+                    if (type.GetTypeInfo().IsClass)
                     {
                         typeComparer = GetReferenceComparisonFunction(type);
                     }
@@ -340,11 +350,11 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                     {
                         typeComparer = GetIEquatableComparisonFunction(type);
                     }
-                    else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    else if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
                         typeComparer = GetNullableComparisonFunction(type);
                     }
-                    else if (type.IsEnum)
+                    else if (type.GetTypeInfo().IsEnum)
                     {
                         typeComparer = GetEnumComparisonFunction(type);
                     }
@@ -387,7 +397,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns>The type of the specified member.</returns>
         private static Type GetMemberType(MemberInfo member)
         {
-            switch (member.MemberType)
+            switch (member.MemberType())
             {
                 case MemberTypes.Property:
                     return ((PropertyInfo)member).PropertyType;
@@ -470,8 +480,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         {
             var param1 = Expression.Parameter(type, "o1");
             var param2 = Expression.Parameter(type, "o2");
-            var arg1   = param1;
-            var arg2   = Expression.Convert(param2, typeof(Object));
+            var arg1 = param1;
+            var arg2 = Expression.Convert(param2, typeof(Object));
 
             var delegateType = typeof(DataBindingComparer<>).MakeGenericType(type);
             return Expression.Lambda(delegateType, Expression.Call(miObjectEquals, arg1, arg2), param1, param2).Compile();
@@ -488,8 +498,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             var ixDelimiter = expression.IndexOf('|');
             if (ixDelimiter >= 0)
             {
-                var offset = braces ? 
-                    expression.StartsWith("{{::") ? 4 : 2 : 
+                var offset = braces ?
+                    expression.StartsWith("{{::") ? 4 : 2 :
                     expression.StartsWith("::") ? 2 : 0;
 
                 return expression.Substring(offset, ixDelimiter - offset).Trim();
@@ -498,8 +508,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             {
                 if (braces)
                 {
-                    return (expression.StartsWith("{{::") ? 
-                    expression.Substring(4, expression.Length - 6) : 
+                    return (expression.StartsWith("{{::") ?
+                    expression.Substring(4, expression.Length - 6) :
                     expression.Substring(2, expression.Length - 4)).Trim();
                 }
                 return (expression.StartsWith("::") ? expression.Substring(2) : expression).Trim();

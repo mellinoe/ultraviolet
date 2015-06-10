@@ -940,12 +940,12 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             var triggerTypeToken = state.Consume();
             MatchTokenOrFail(state, triggerTypeToken, UvssLexerTokenType.Identifier);
 
-            if (String.Equals(triggerTypeToken.Value, "property", StringComparison.InvariantCultureIgnoreCase))
+            if (String.Equals(triggerTypeToken.Value, "property", StringComparison.CurrentCultureIgnoreCase))
             {
                 return ConsumePropertyTrigger(state, triggers);
             }
 
-            if (String.Equals(triggerTypeToken.Value, "event", StringComparison.InvariantCultureIgnoreCase))
+            if (String.Equals(triggerTypeToken.Value, "event", StringComparison.CurrentCultureIgnoreCase))
             {
                 return ConsumeEventTrigger(state, triggers);
             }
@@ -1086,13 +1086,13 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
                     var argToken = state.TryConsumeNonWhiteSpace();
                     MatchTokenOrFail(state, argToken, UvssLexerTokenType.Identifier);
 
-                    if (String.Equals(argToken.Value.Value, "handled", StringComparison.InvariantCultureIgnoreCase))
+                    if (String.Equals(argToken.Value.Value, "handled", StringComparison.CurrentCultureIgnoreCase))
                     {
                         handled = true;
                         continue;
                     }
 
-                    if (String.Equals(argToken.Value.Value, "set-handled", StringComparison.InvariantCultureIgnoreCase))
+                    if (String.Equals(argToken.Value.Value, "set-handled", StringComparison.CurrentCultureIgnoreCase))
                     {
                         setHandled = true;
                         continue;
@@ -1135,7 +1135,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
 
                 MatchTokenOrFail(state, nextToken, UvssLexerTokenType.Identifier);
 
-                if (String.Equals(nextToken.Value.Value, "set", StringComparison.InvariantCultureIgnoreCase))
+                if (String.Equals(nextToken.Value.Value, "set", StringComparison.CurrentCultureIgnoreCase))
                 {
                     if (!ConsumeSetTriggerAction(state, trigger))
                         return false;
@@ -1143,7 +1143,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
                     continue;
                 }
 
-                if (String.Equals(nextToken.Value.Value, "play-sfx", StringComparison.InvariantCultureIgnoreCase))
+                if (String.Equals(nextToken.Value.Value, "play-sfx", StringComparison.CurrentCultureIgnoreCase))
                 {
                     if (!ConsumePlaySfxTriggerAction(state, trigger))
                         return false;
@@ -1151,7 +1151,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
                     continue;
                 }
 
-                if (String.Equals(nextToken.Value.Value, "play-storyboard", StringComparison.InvariantCultureIgnoreCase))
+                if (String.Equals(nextToken.Value.Value, "play-storyboard", StringComparison.CurrentCultureIgnoreCase))
                 {
                     if (!ConsumePlayStoryboardTriggerAction(state, trigger))
                         return false;

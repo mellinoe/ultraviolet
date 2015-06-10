@@ -284,7 +284,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 
             var merged = false;
 
-            var currentType = forType.BaseType;
+            var currentType = forType.GetTypeInfo().BaseType;
             while (currentType != null)
             {
                 PropertyMetadata currentTypeMetadata;
@@ -294,7 +294,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                     merged = true;
                     break;
                 }
-                currentType = currentType.BaseType;
+                currentType = currentType.GetTypeInfo().BaseType;
             }
 
             if (!merged)
@@ -356,7 +356,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (styleSetter == null)
                 throw new InvalidOperationException(PresentationStrings.DependencyPropertyIsReadOnly.Format(Name));
 
-            styleSetter(dobj, style, CultureInfo.InvariantCulture);
+            styleSetter(dobj, style, CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -388,7 +388,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                     if (metadataOverrides.TryGetValue(currentType, out metadata))
                         return metadata;
 
-                    currentType = currentType.BaseType;
+                    currentType = currentType.GetTypeInfo().BaseType;
                 }
             }
             return defaultMetadata;
@@ -409,7 +409,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 if (ownerType == current || metadataOverrides.ContainsKey(current))
                     return true;
 
-                current = current.BaseType;
+                current = current.GetTypeInfo().BaseType;
             }
             return false;
         }

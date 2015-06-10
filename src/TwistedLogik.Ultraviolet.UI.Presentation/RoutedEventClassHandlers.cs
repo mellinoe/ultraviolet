@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TwistedLogik.Nucleus;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -41,7 +42,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             {
                 foreach (var kvp in otherManagers)
                 {
-                    if (kvp.Key.IsSubclassOf(classType))
+                    if (kvp.Key.GetTypeInfo().IsSubclassOf(classType))
                     {
                         kvp.Value.AddHandler(classType, handler, handledEventsToo);
                     }
@@ -65,7 +66,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             {
                 while (true)
                 {
-                    classType = classType.BaseType;
+                    classType = classType.GetTypeInfo().BaseType;
 
                     if (classType == null)
                         break;
@@ -130,7 +131,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 manager.SuspendSort();
                 foreach (var kvp in existing)
                 {
-                    if (classType.IsSubclassOf(kvp.Key))
+                    if (classType.GetTypeInfo().IsSubclassOf(kvp.Key))
                     {
                         var handlers = kvp.Value.GetClassHandlers();
                         if (handlers == null)

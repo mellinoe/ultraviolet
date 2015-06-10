@@ -10,6 +10,7 @@ using TwistedLogik.Ultraviolet.UI.Presentation.Animations;
 using TwistedLogik.Ultraviolet.UI.Presentation.Controls.Primitives;
 using TwistedLogik.Ultraviolet.UI.Presentation.Input;
 using TwistedLogik.Ultraviolet.UI.Presentation.Styles;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -59,7 +60,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             this.uv      = uv;
             this.classes = new UIElementClassCollection(this);
 
-            var attr = (UvmlKnownTypeAttribute)GetType().GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).SingleOrDefault();
+            var attr = (UvmlKnownTypeAttribute)GetType().GetTypeInfo().GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).SingleOrDefault();
             if (attr != null)
             {
                 this.uvmlName = attr.Name ?? GetType().Name;
@@ -1271,7 +1272,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             {
                 if (dprop != null)
                 {
-                    dprop.ApplyStyle(this, style, CultureInfo.InvariantCulture);
+                    dprop.ApplyStyle(this, style, CultureInfo.CurrentCulture);
                 }
             }
         }

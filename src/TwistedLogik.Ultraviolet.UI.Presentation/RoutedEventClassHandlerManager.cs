@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TwistedLogik.Nucleus;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -41,11 +42,11 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <param name="handledEventsToo">A value indicating whether the handler should receive events which have already been handled by other handlers.</param>
         public void AddHandler(Type classType, Delegate handler, Boolean handledEventsToo)
         {
-            if (classType != this.ownerType && !this.ownerType.IsSubclassOf(classType))
+            if (classType != this.ownerType && !this.ownerType.GetTypeInfo().IsSubclassOf(classType))
                 throw new ArgumentException(PresentationStrings.ClassTypeMustBeSubclassOfOwnerType.Format(classType.Name, ownerType.Name));
 
             if (routedEvent.DelegateType != handler.GetType())
-                throw new ArgumentException(PresentationStrings.HandlerTypeMismatch.Format(handler.Method.Name, routedEvent.DelegateType.Name), "handler");
+                throw new ArgumentException(PresentationStrings.HandlerTypeMismatch.Format("handler.Method.Name", routedEvent.DelegateType.Name), "handler");
 
             lock (handlers)
             {
@@ -56,7 +57,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 while (currentType != classType)
                 {
                     ordinalByType++;
-                    currentType = currentType.BaseType;
+                    currentType = currentType.GetTypeInfo().BaseType;
                 }
 
                 var metadata = new RoutedEventHandlerMetadata(handler, ordinalByType, ordinalWithinType, handledEventsToo);

@@ -8,6 +8,7 @@ using TwistedLogik.Nucleus;
 using TwistedLogik.Ultraviolet.UI.Presentation.Animations;
 using TwistedLogik.Ultraviolet.UI.Presentation.Controls;
 using TwistedLogik.Ultraviolet.UI.Presentation.Styles;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -42,7 +43,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         {
             Contract.Require(configuration, "configuration");
 
-            configuration.ViewProviderAssembly = typeof(PresentationFoundation).Assembly.FullName;
+            configuration.ViewProviderAssembly = typeof(PresentationFoundation).GetTypeInfo().Assembly.FullName;
         }
 
         /// <summary>
@@ -422,7 +423,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (!typeof(UIElement).IsAssignableFrom(type))
                 return false;
 
-            attr = type.GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).Cast<UvmlKnownTypeAttribute>().SingleOrDefault();
+            attr = type.GetTypeInfo().GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).Cast<UvmlKnownTypeAttribute>().SingleOrDefault();
 
             return attr != null;
         }
@@ -460,7 +461,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <param name="layout">The XML document that defines the custom element's layout.</param>
         private void RegisterElementInternal(Dictionary<String, KnownType> registry, Type type, XDocument layout)
         {
-            var knownTypeAttr = (UvmlKnownTypeAttribute)type.GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).SingleOrDefault();
+            var knownTypeAttr = (UvmlKnownTypeAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).SingleOrDefault();
             if (knownTypeAttr == null)
                 throw new InvalidOperationException(PresentationStrings.KnownTypeMissingAttribute.Format(type.Name));
 
@@ -490,8 +491,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// </summary>
         private void RegisterCoreTypes()
         {
-            var knownTypes = from t in typeof(UIElement).Assembly.GetTypes()
-                             let attr = t.GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).SingleOrDefault()
+            var knownTypes = from t in typeof(UIElement).GetTypeInfo().Assembly.GetTypes()
+                             let attr = t.GetTypeInfo().GetCustomAttributes(typeof(UvmlKnownTypeAttribute), false).SingleOrDefault()
                              where
                               attr != null
                              select t;
@@ -522,7 +523,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// <returns>The <see cref="KnownType"/> registration that was created.</returns>
         private KnownType CreateKnownElementRegistration(Type type, UvmlKnownTypeAttribute attr)
         {
-            var defaultPropertyAttr  = (DefaultPropertyAttribute)type.GetCustomAttributes(typeof(DefaultPropertyAttribute), true).SingleOrDefault();
+            var defaultPropertyAttr  = (DefaultPropertyAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(DefaultPropertyAttribute), true).SingleOrDefault();
             var defaultProperty      = default(String);
             if (defaultPropertyAttr != null)
             {
@@ -757,7 +758,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (String.IsNullOrEmpty(uiElementAttr.ComponentTemplate))
                 return;
 
-            var asm = type.Assembly;
+            var asm = type.GetTypeInfo().Assembly;
 
             using (var stream = asm.GetManifestResourceStream(uiElementAttr.ComponentTemplate))
             {

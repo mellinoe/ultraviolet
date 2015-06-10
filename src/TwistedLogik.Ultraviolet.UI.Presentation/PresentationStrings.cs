@@ -13,7 +13,11 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         /// </summary>
         static PresentationStrings()
         {
+#if NETCORE
+            var asm = typeof(PresentationStrings).GetTypeInfo().Assembly;
+#else
             var asm = Assembly.GetExecutingAssembly();
+#endif
             using (var stream = asm.GetManifestResourceStream("TwistedLogik.Ultraviolet.UI.Presentation.Resources.Strings.xml"))
             {
                 StringDatabase.LoadFromStream(stream);

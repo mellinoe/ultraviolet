@@ -100,7 +100,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                     field.SetValue(obj, kvp.Value);
                 }
 
-                type = type.BaseType;
+                type = type.GetTypeInfo().BaseType;
             }
         }
 

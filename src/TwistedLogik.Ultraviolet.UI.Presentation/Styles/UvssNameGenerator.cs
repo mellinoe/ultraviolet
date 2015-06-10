@@ -16,7 +16,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
         public static String GenerateUvssName(String name)
         {
             var sb     = new StringBuilder();
-            var offset = name.StartsWith("Is", StringComparison.InvariantCultureIgnoreCase) && 
+            var offset = name.StartsWith("Is", StringComparison.CurrentCultureIgnoreCase) && 
                 name.Length > 2 && Char.IsUpper(name[2]) ? 2 : 0;
 
             for (int i = offset; i < name.Length; i++)

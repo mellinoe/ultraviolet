@@ -272,7 +272,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             while (ix < input.Length && IsValidInStyleName(input[ix], ref qualified)) { ix++; length++; }
 
             var value = input.Substring(start, length);
-            var type  = String.Equals(value, "trigger", StringComparison.InvariantCultureIgnoreCase) ? UvssLexerTokenType.TriggerKeyword : UvssLexerTokenType.StyleName;
+            var type  = String.Equals(value, "trigger", StringComparison.CurrentCultureIgnoreCase) ? UvssLexerTokenType.TriggerKeyword : UvssLexerTokenType.StyleName;
             var token = new UvssLexerToken(type, start, length, line, value);
             output.Add(token);
 
@@ -736,7 +736,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
                 return false;
 
             var token = output[output.Count - 1];
-            return String.Equals(token.Value, value, StringComparison.InvariantCultureIgnoreCase);
+            return String.Equals(token.Value, value, StringComparison.CurrentCultureIgnoreCase);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using TwistedLogik.Nucleus;
 using TwistedLogik.Ultraviolet.UI.Presentation.Animations;
 using TwistedLogik.Ultraviolet.UI.Presentation.Styles;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -27,8 +28,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 this.comparer = (DataBindingComparer<T>)BindingExpressions.GetComparisonFunction(typeof(T));
 
                 this.metadata        = property.GetMetadataForOwner(owner.GetType());
-                this.isReferenceType = typeof(T).IsClass;
-                this.isValueType     = typeof(T).IsValueType;
+                this.isReferenceType = typeof(T).GetTypeInfo().IsClass;
+                this.isValueType     = typeof(T).GetTypeInfo().IsValueType;
 
                 if (metadata.HasDefaultValue)
                 {

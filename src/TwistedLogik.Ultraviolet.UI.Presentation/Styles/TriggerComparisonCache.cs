@@ -66,14 +66,19 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
         private static void CreateComparisonDelegates(Type type)
         {
             var underlyingType = type;
-            if (type.IsValueType && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.GetTypeInfo().IsValueType && type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 underlyingType = type.GetGenericArguments()[0];
             }
 
-            var miGetValue  = typeof(DependencyObject).GetMethod("GetValue").MakeGenericMethod(type);
+            var miGetValue = typeof(DependencyObject).GetMethod("GetValue").MakeGenericMethod(type);
+#if NETCORE
+            var miEquals = underlyingType.GetMethod("Equals", new[] { underlyingType });
+            var miCompareTo = underlyingType.GetMethod("CompareTo", new[] { underlyingType });
+#else
             var miEquals    = underlyingType.GetMethod("Equals", BindingFlags.Public | BindingFlags.Instance, null, new[] { underlyingType }, null);
             var miCompareTo = underlyingType.GetMethod("CompareTo", BindingFlags.Public | BindingFlags.Instance, null, new[] { underlyingType }, null);
+#endif
 
             if (miEquals == null && miCompareTo == null)
                 throw new InvalidOperationException(PresentationStrings.TypeIsNotComparable.Format(type.Name));
@@ -84,16 +89,16 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
 
             if (miEquals != null)
             {
-                cacheForType[(Int32)TriggerComparisonOp.Equals]    = CreateEqualsComparison(type, miGetValue, miEquals);
+                cacheForType[(Int32)TriggerComparisonOp.Equals] = CreateEqualsComparison(type, miGetValue, miEquals);
                 cacheForType[(Int32)TriggerComparisonOp.NotEquals] = CreateNotEqualsComparison(type, miGetValue, miEquals);
             }
 
             if (miCompareTo != null)
             {
-                cacheForType[(Int32)TriggerComparisonOp.GreaterThan]          = CreateGreaterThanComparison(type, miGetValue, miCompareTo);
+                cacheForType[(Int32)TriggerComparisonOp.GreaterThan] = CreateGreaterThanComparison(type, miGetValue, miCompareTo);
                 cacheForType[(Int32)TriggerComparisonOp.GreaterThanOrEqualTo] = CreateGreaterThanEqualsComparison(type, miGetValue, miCompareTo);
-                cacheForType[(Int32)TriggerComparisonOp.LessThan]             = CreateLessThanComparison(type, miGetValue, miCompareTo);
-                cacheForType[(Int32)TriggerComparisonOp.LessThanOrEqualTo]    = CreateLessThanEqualsComparison(type, miGetValue, miCompareTo);
+                cacheForType[(Int32)TriggerComparisonOp.LessThan] = CreateLessThanComparison(type, miGetValue, miCompareTo);
+                cacheForType[(Int32)TriggerComparisonOp.LessThanOrEqualTo] = CreateLessThanEqualsComparison(type, miGetValue, miCompareTo);
             }
         }
 
@@ -105,7 +110,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
         /// <returns>The lifted expression.</returns>
         private static Expression Lift(Expression exp)
         {
-            var nullable = exp.Type.IsValueType && exp.Type.IsGenericType && exp.Type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            var nullable = exp.Type.GetTypeInfo().IsValueType && exp.Type.GetTypeInfo().IsGenericType && exp.Type.GetGenericTypeDefinition() == typeof(Nullable<>);
             if (nullable)
             {
                 return Expression.Property(exp, "Value");
@@ -129,8 +134,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             var vars = new List<ParameterExpression>();
             var exps = new List<Expression>();
 
-            var paramDobj   = Expression.Parameter(typeof(DependencyObject), "dobj");
-            var paramDprop  = Expression.Parameter(typeof(DependencyProperty), "dprop");
+            var paramDobj = Expression.Parameter(typeof(DependencyObject), "dobj");
+            var paramDprop = Expression.Parameter(typeof(DependencyProperty), "dprop");
             var paramRefval = Expression.Parameter(typeof(Object), "refval");
 
             var varCurrentValue = Expression.Variable(type, "currentValue");
@@ -140,9 +145,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             exps.Add(expAssignCurrentValue);
 
             var expReturnTarget = Expression.Label(typeof(Boolean), "exit");
-            var expReturnLabel  = Expression.Label(expReturnTarget, Expression.Constant(false));
+            var expReturnLabel = Expression.Label(expReturnTarget, Expression.Constant(false));
 
-            var includeNullChecks = !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+            var includeNullChecks = !type.GetTypeInfo().IsValueType || (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
             if (includeNullChecks)
             {
                 exps.Add(Expression.IfThen(
@@ -190,8 +195,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             var vars = new List<ParameterExpression>();
             var exps = new List<Expression>();
 
-            var paramDobj   = Expression.Parameter(typeof(DependencyObject), "dobj");
-            var paramDprop  = Expression.Parameter(typeof(DependencyProperty), "dprop");
+            var paramDobj = Expression.Parameter(typeof(DependencyObject), "dobj");
+            var paramDprop = Expression.Parameter(typeof(DependencyProperty), "dprop");
             var paramRefval = Expression.Parameter(typeof(Object), "refval");
 
             var varCurrentValue = Expression.Variable(type, "currentValue");
@@ -201,9 +206,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             exps.Add(expAssignCurrentValue);
 
             var expReturnTarget = Expression.Label(typeof(Boolean), "exit");
-            var expReturnLabel  = Expression.Label(expReturnTarget, Expression.Constant(false));
+            var expReturnLabel = Expression.Label(expReturnTarget, Expression.Constant(false));
 
-            var includeNullChecks = !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+            var includeNullChecks = !type.GetTypeInfo().IsValueType || (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
             if (includeNullChecks)
             {
                 exps.Add(Expression.IfThen(
@@ -249,8 +254,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             var vars = new List<ParameterExpression>();
             var exps = new List<Expression>();
 
-            var paramDobj   = Expression.Parameter(typeof(DependencyObject), "dobj");
-            var paramDprop  = Expression.Parameter(typeof(DependencyProperty), "dprop");
+            var paramDobj = Expression.Parameter(typeof(DependencyObject), "dobj");
+            var paramDprop = Expression.Parameter(typeof(DependencyProperty), "dprop");
             var paramRefval = Expression.Parameter(typeof(Object), "refval");
 
             var varCurrentValue = Expression.Variable(type, "currentValue");
@@ -260,9 +265,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             exps.Add(expAssignCurrentValue);
 
             var expReturnTarget = Expression.Label(typeof(Boolean), "exit");
-            var expReturnLabel  = Expression.Label(expReturnTarget, Expression.Constant(false));
+            var expReturnLabel = Expression.Label(expReturnTarget, Expression.Constant(false));
 
-            var includeNullChecks = !type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+            var includeNullChecks = !type.GetTypeInfo().IsValueType || (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
             if (includeNullChecks)
             {
                 exps.Add(Expression.IfThen(
@@ -275,7 +280,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
             var callParamType = miCompareTo.GetParameters()[0].ParameterType;
 
             var expCallCompare = Expression.Call(Lift(varCurrentValue), miCompareTo, Expression.Convert(Lift(paramRefval), callParamType));
-            var expEval        = op(expCallCompare);
+            var expEval = op(expCallCompare);
             exps.Add(Expression.Return(expReturnTarget, expEval));
 
             exps.Add(expReturnLabel);
@@ -320,7 +325,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Styles
         }
 
         // The cache of delegates for each known type.
-        private static readonly Dictionary<Type, Dictionary<Int32, TriggerComparison>> cache = 
+        private static readonly Dictionary<Type, Dictionary<Int32, TriggerComparison>> cache =
             new Dictionary<Type, Dictionary<Int32, TriggerComparison>>();
     }
 }

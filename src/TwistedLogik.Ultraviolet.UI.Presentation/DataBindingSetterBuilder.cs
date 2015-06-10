@@ -38,7 +38,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
                 }
                 else
                 {
-                    if (current.Type.IsValueType)
+                    if (current.Type.GetTypeInfo().IsValueType)
                         return;
 
                     if (!AddValueAssignment(current, value, component))
@@ -109,7 +109,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
         private Boolean AddValueAssignment(Expression current, Expression value, String component)
         {
             var memberExpression = Expression.PropertyOrField(current, component);
-            if (memberExpression.Member.MemberType == MemberTypes.Property)
+            if (memberExpression.Member.MemberType() == MemberTypes.Property)
             {
                 var memberProperty = (PropertyInfo)memberExpression.Member;
                 if (!memberProperty.CanWrite)

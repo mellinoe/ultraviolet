@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -50,7 +51,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             var assignment = Expression.Assign(variable, reference);
             expressions.Add(assignment);
 
-            if (reference.Type.IsClass)
+            if (reference.Type.GetTypeInfo().IsClass)
             {
                 AddNullCheck(variable);
             }

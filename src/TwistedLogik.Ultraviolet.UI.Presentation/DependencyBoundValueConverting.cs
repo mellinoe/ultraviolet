@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -121,7 +122,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (conversionType.IsAssignableFrom(originalType))
                 return value;
 
-            return conversionType.IsClass ? null : Activator.CreateInstance(conversionType);
+            return conversionType.GetTypeInfo().IsClass ? null : Activator.CreateInstance(conversionType);
         }
 
         /// <summary>

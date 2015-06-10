@@ -57,7 +57,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Controls
         /// <remarks>The styling name of this dependency property is 'delay'.</remarks>
         public static readonly DependencyProperty DelayProperty = DependencyProperty.Register("Delay", typeof(Double), typeof(RepeatButton),
             new PropertyMetadata<Double>(GetDefaultDelay()));
-        
+
         /// <summary>
         /// Identifies the <see cref="Interval"/> dependency property.
         /// </summary>
@@ -76,7 +76,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Controls
         /// <inheritdoc/>
         protected override void OnLostMouseCapture(ref RoutedEventData data)
         {
-            repeating   = false;
+            repeating = false;
             repeatTimer = 0;
 
             base.OnLostMouseCapture(ref data);
@@ -87,7 +87,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Controls
         {
             if (button == MouseButton.Left)
             {
-                repeating   = false;
+                repeating = false;
                 repeatTimer = 0;
 
                 data.Handled = true;
@@ -102,7 +102,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Controls
         [SecuritySafeCritical]
         private static Double GetDefaultDelay()
         {
+#if !NETCORE
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+#endif
             {
                 const UInt32 SPI_GETKEYBOARDDELAY = 0x0016;
 
@@ -121,7 +123,9 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Controls
         [SecuritySafeCritical]
         private static Double GetDefaultInterval()
         {
+#if !NETCORE
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+#endif
             {
                 const UInt32 SPI_GETKEYBOARDSPEED = 0x000A;
 

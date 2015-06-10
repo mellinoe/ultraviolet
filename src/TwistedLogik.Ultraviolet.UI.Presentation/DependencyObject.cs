@@ -4,6 +4,7 @@ using TwistedLogik.Nucleus;
 using TwistedLogik.Nucleus.Data;
 using TwistedLogik.Ultraviolet.UI.Presentation.Animations;
 using TwistedLogik.Ultraviolet.UI.Presentation.Styles;
+using System.Reflection;
 
 namespace TwistedLogik.Ultraviolet.UI.Presentation
 {
@@ -610,7 +611,7 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             var value = style.Value.Trim();
             if (value == "null")
             {
-                return type.IsValueType ? Activator.CreateInstance(type) : null;
+                return type.GetTypeInfo().IsValueType ? Activator.CreateInstance(type) : null;
             }
 
             var resolvedValue = ObjectResolver.FromString(value, type, provider, true);

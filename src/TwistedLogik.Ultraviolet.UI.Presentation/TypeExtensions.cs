@@ -41,8 +41,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
             if (typeTo.IsAssignableFrom(typeFrom))
                 return true;
 
-            if (typeFrom.IsEnum && IsNumericType(typeTo) ||
-                typeTo.IsEnum && IsNumericType(typeFrom))
+            if (typeFrom.GetTypeInfo().IsEnum && IsNumericType(typeTo) ||
+                typeTo.GetTypeInfo().IsEnum && IsNumericType(typeFrom))
             {
                 return true;
             }
