@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TwistedLogik.Ultraviolet.OpenGL</RootNamespace>
+    <AssemblyName>TwistedLogik.Ultraviolet.OpenGL</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);NETCORE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TwistedLogik.Gluon\TwistedLogik.Gluon.csproj">
+      <Name>TwistedLogik.Gluon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwistedLogik.Ultraviolet.SDL2\TwistedLogik.Ultraviolet.SDL2.csproj">
+      <Name>TwistedLogik.Ultraviolet.SDL2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwistedLogik.Ultraviolet\TwistedLogik.Ultraviolet.csproj">
+      <Name>TwistedLogik.Ultraviolet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwistedLogik.Nucleus\TwistedLogik.Nucleus.csproj">
+      <Name>TwistedLogik.Nucleus</Name>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Graphics\Graphics2D\OpenGLSpriteFontHelper.cs" />
+    <Compile Include="Graphics\Graphics2D\OpenGLSpriteFontProcessor.cs" />
+    <Compile Include="Graphics\Graphics2D\OpenGLSpriteFontTextureProcessor.cs" />
+    <Compile Include="Graphics\OpenGLStateInteger.cs" />
+    <Compile Include="Graphics\OpenGLEffectProcessor.cs" />
+    <Compile Include="Graphics\OpenGLShaderProgram.cs" />
+    <Compile Include="Graphics\OpenGLShaderProgramCollection.cs" />
+    <Compile Include="Graphics\OpenGLShaderUniform.cs" />
+    <Compile Include="Graphics\OpenGLEffectTechnique.cs" />
+    <Compile Include="Graphics\OpenGLEffectPass.cs" />
+    <Compile Include="Graphics\OpenGLEffectTechniqueCollection.cs" />
+    <Compile Include="Graphics\OpenGLEffectPassCollection.cs" />
+    <Compile Include="Graphics\OpenGLRenderBuffer2D.cs" />
+    <Compile Include="Graphics\OpenGLRenderTarget2D.cs" />
+    <Compile Include="Graphics\OpenGLShaderUniformCollection.cs" />
+    <Compile Include="Graphics\OpenGLBasicEffect.cs" />
+    <Compile Include="Graphics\OpenGLState.cs" />
+    <Compile Include="Graphics\OpenGLSurface2D.cs" />
+    <Compile Include="Graphics\OpenGLSurface2DProcessor.cs" />
+    <Compile Include="Graphics\IBindableResource.cs" />
+    <Compile Include="Graphics\OpenGLTexture2DProcessorMetadata.cs" />
+    <Compile Include="OpenGLUltravioletConfiguration.cs" />
+    <Compile Include="Graphics\OpenGLFragmentShaderImporter.cs" />
+    <Compile Include="Graphics\OpenGLTexture2DProcessor.cs" />
+    <Compile Include="Graphics\OpenGLVertexShaderImporter.cs" />
+    <Compile Include="Graphics\OpenGLFragmentShaderProcessor.cs.cs" />
+    <Compile Include="Graphics\OpenGLEffectImplementationProcessor.cs.cs" />
+    <Compile Include="Graphics\OpenGLVertexShaderProcessor.cs" />
+    <Compile Include="Graphics\OpenGLGeometryStream.cs" />
+    <Compile Include="Graphics\Graphics2D\OpenGLSpriteBatchEffect.cs" />
+    <Compile Include="Graphics\OpenGLSamplerState.cs" />
+    <Compile Include="Graphics\OpenGLRasterizerState.cs" />
+    <Compile Include="Graphics\OpenGLDepthStencilState.cs" />
+    <Compile Include="Graphics\OpenGLBlendState.cs" />
+    <Compile Include="Graphics\OpenGLEffectParameter.cs" />
+    <Compile Include="Graphics\OpenGLEffectParameterCollection.cs" />
+    <Compile Include="Graphics\OpenGLEffectParameterDataType.cs" />
+    <Compile Include="Graphics\OpenGLEffectParameterData.cs" />
+    <Compile Include="Graphics\OpenGLTexture2D.cs" />
+    <Compile Include="Graphics\IOpenGLResource.cs" />
+    <Compile Include="Graphics\OpenGLEffectImplementation.cs" />
+    <Compile Include="Graphics\OpenGLFragmentShader.cs.cs" />
+    <Compile Include="Graphics\OpenGLIndexBuffer.cs" />
+    <Compile Include="Graphics\OpenGLVertexBuffer.cs" />
+    <Compile Include="Graphics\ShaderCompiler.cs" />
+    <Compile Include="Graphics\OpenGLVertexShader.cs" />
+    <Compile Include="OpenGLCursorProcessor.cs" />
+    <Compile Include="OpenGLCursor.cs" />
+    <Compile Include="OpenGLInitializer.cs" />
+    <Compile Include="OpenGLUltravioletGraphics.cs" />
+    <Compile Include="OpenGLUltravioletContext.cs" />
+    <Compile Include="OpenGLUltravioletPlatform.cs" />
+    <Compile Include="Platform\OpenGLUltravioletClipboardInfo.cs" />
+    <Compile Include="Platform\OpenGLUltravioletDisplay.cs" />
+    <Compile Include="Platform\OpenGLUltravioletDisplayInfo.cs" />
+    <Compile Include="Platform\OpenGLUltravioletWindow.cs" />
+    <Compile Include="Platform\OpenGLUltravioletWindow.NativeMethods.cs" />
+    <Compile Include="Platform\OpenGLUltravioletWindowInfo.cs" />
+    <Compile Include="OpenGLStrings.cs" />
+    <Compile Include="OpenGLUltravioletGraphicsFactoryInitializer.cs" />
+    <Compile Include="ResourceUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\SpriteBatchEffect.vert" />
+    <EmbeddedResource Include="Resources\SpriteBatchEffect.frag" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\BasicEffect.frag" />
+    <EmbeddedResource Include="Resources\BasicEffect.vert" />
+    <EmbeddedResource Include="Resources\BasicEffectTextured.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectTextured.vert" />
+    <EmbeddedResource Include="Resources\BasicEffectColored.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectColored.vert" />
+    <EmbeddedResource Include="Resources\BasicEffectColoredTextured.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectColoredTextured.vert" />
+    <EmbeddedResource Include="Resources\SpriteBatchEffectES.vert" />
+    <EmbeddedResource Include="Resources\SpriteBatchEffectES.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectES.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectES.vert" />
+    <EmbeddedResource Include="Resources\BasicEffectColoredES.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectColoredES.vert" />
+    <EmbeddedResource Include="Resources\BasicEffectTexturedES.vert" />
+    <EmbeddedResource Include="Resources\BasicEffectTexturedES.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectColoredTexturedES.frag" />
+    <EmbeddedResource Include="Resources\BasicEffectColoredTexturedES.vert" />
+    <None Include="TwistedLogik.Ultraviolet.OpenGL.Licenses.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\uv64.png" />
+  </ItemGroup>
+
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>
