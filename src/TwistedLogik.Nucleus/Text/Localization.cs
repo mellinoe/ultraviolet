@@ -47,7 +47,7 @@ namespace TwistedLogik.Nucleus.Text
 
             var plugins = from type in asm.GetTypes()
                           where
-                            type.IsClass && !type.IsAbstract && type.GetInterfaces().Contains(typeof(ILocalizationPlugin))
+                            type.GetTypeInfo().IsClass && !type.GetTypeInfo().IsAbstract && type.GetInterfaces().Contains(typeof(ILocalizationPlugin))
                           select type;
 
             foreach (var plugin in plugins)
@@ -268,8 +268,8 @@ namespace TwistedLogik.Nucleus.Text
         /// </summary>
         public static String CurrentCulture
         {
-            get { return Thread.CurrentThread.CurrentCulture.Name; }
-            set { Thread.CurrentThread.CurrentCulture = new CultureInfo(value ?? "en-US"); }
+            get { return CultureInfo.CurrentCulture.Name; }
+            set { CultureInfo.CurrentCulture = new CultureInfo(value ?? "en-US"); }
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace TwistedLogik.Nucleus.Text
         /// </summary>
         public static String CurrentCultureDisplayName
         {
-            get { return Thread.CurrentThread.CurrentCulture.DisplayName; }
+            get { return CultureInfo.CurrentCulture.DisplayName; }
         }
 
         /// <summary>

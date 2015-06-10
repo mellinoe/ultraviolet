@@ -38,10 +38,13 @@ namespace TwistedLogik.Nucleus
         /// </summary>
         static LibraryLoader()
         {
+#if !NETCORE
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Win32NT:
+#endif
                     loader = Load_Win32NT;
+#if !NETCORE
                     break;
                 case PlatformID.Unix:
                     loader = Load_Unix;
@@ -50,6 +53,7 @@ namespace TwistedLogik.Nucleus
                     loader = Load_NotSupported;
                     break;
             }
+#endif
         }
 
         /// <summary>
@@ -70,7 +74,7 @@ namespace TwistedLogik.Nucleus
         private static void Load_Win32NT(String name)
         {
             var file = Path.ChangeExtension(name, ".dll");
-            var path = Path.GetFullPath(Path.Combine(Environment.Is64BitProcess ? "x64" : "x86", "win32nt", file));
+            var path = Path.GetFullPath(Path.Combine(EnvironmentEx.Is64BitProcess ? "x64" : "x86", "win32nt", file));
             var handle = NativeMethods.LoadLibraryEx(path, IntPtr.Zero, 0);
             if (handle == IntPtr.Zero)
             {
@@ -83,9 +87,9 @@ namespace TwistedLogik.Nucleus
         /// </summary>
         /// <param name="name">The name of the native library to load.</param>
         private static void Load_Unix(String name)
-		{
-			// Do nothing; let Mono's library mapper handle it.
-		}
+        {
+            // Do nothing; let Mono's library mapper handle it.
+        }
 
         /// <summary>
         /// Throws an exception indicating that the current operating system is not supported.

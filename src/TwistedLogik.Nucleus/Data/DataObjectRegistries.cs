@@ -38,7 +38,7 @@ namespace TwistedLogik.Nucleus.Data
             var types = asm.GetTypes();
             var typesOfRegistry = from t in types
                                   where
-                                   t.GetInterface(typeof(IDataObjectRegistry).FullName) != null && !t.IsAbstract
+                                   t.GetInterface(typeof(IDataObjectRegistry).FullName) != null && !t.GetTypeInfo().IsAbstract
                                   select t;
 
             foreach (var type in typesOfRegistry)
@@ -170,14 +170,14 @@ namespace TwistedLogik.Nucleus.Data
         /// <returns>The element type of the specified registry.</returns>
         private static Type GetRegistryElementType(IDataObjectRegistry registry)
         {
-            var ancestor = registry.GetType().BaseType;
+            var ancestor = registry.GetType().GetTypeInfo().BaseType;
             while (ancestor != null)
             {
-                if (ancestor.IsGenericType && ancestor.GetGenericTypeDefinition() == typeof(DataObjectRegistry<>))
+                if (ancestor.GetTypeInfo().IsGenericType && ancestor.GetGenericTypeDefinition() == typeof(DataObjectRegistry<>))
                 {
                     return ancestor.GetGenericArguments()[0];
                 }
-                ancestor = ancestor.BaseType;
+                ancestor = ancestor.GetTypeInfo().BaseType;
             }
             return null;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using TwistedLogik.Nucleus.Collections;
+using System.Reflection;
 
 namespace TwistedLogik.Nucleus.Messages
 {
@@ -108,7 +109,7 @@ namespace TwistedLogik.Nucleus.Messages
                         var merged = data.EvaluateMerge(enqueuedMessage.Data);
                         if (merged != null)
                         {
-                            if (!enqueuedMessage.Data.GetType().IsAssignableFrom(merged.GetType()))
+                            if (!enqueuedMessage.Data.GetType().GetTypeInfo().IsAssignableFrom(merged.GetType().GetTypeInfo()))
                                 throw new InvalidOperationException(NucleusStrings.MessageMergeTypeConflict);
                             
                             enqueuedMessage.Data = merged;

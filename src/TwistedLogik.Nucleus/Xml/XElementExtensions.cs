@@ -196,10 +196,14 @@ namespace TwistedLogik.Nucleus.Xml
                 return default(T);
 
             var type = IsNullableType(typeof(T)) ? GetNullableBaseType(typeof(T)) : typeof(T);
+#if NETCORE
+            var parse = type.GetMethod("Parse", new Type[] { typeof(String) });
+#else
             var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(String) }, null);
+#endif
             if (parse != null)
             {
-                return (T)parse.Invoke(null, new object [] { str });
+                return (T)parse.Invoke(null, new object[] { str });
             }
             return (T)Convert.ChangeType(str, typeof(T));
         }
@@ -217,11 +221,15 @@ namespace TwistedLogik.Nucleus.Xml
             if (str == null)
                 return default(T);
 
-            if (typeof(T).IsEnum)
+            if (typeof(T).GetTypeInfo().IsEnum)
                 return (T)Enum.Parse(typeof(T), str);
-            
+
             var type = IsNullableType(typeof(T)) ? GetNullableBaseType(typeof(T)) : typeof(T);
+#if NETCORE
+            var parse = type.GetMethod("Parse", new Type[] { typeof(String) });
+#else
             var parse = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(String) }, null);
+#endif
             if (parse != null)
             {
                 return (T)parse.Invoke(null, new object[] { str });
@@ -270,7 +278,7 @@ namespace TwistedLogik.Nucleus.Xml
         /// <returns><c>true</c> if the specified type is a <c>null</c>able; otherwise, <c>false</c>.</returns>
         private static Boolean IsNullableType(Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            return type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         /// <summary>

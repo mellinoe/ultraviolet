@@ -1,3 +1,5 @@
+using System.Linq;
+
 // Small porting helpers to help my laziness
 
 namespace System.Security
@@ -18,6 +20,17 @@ namespace System
 {
     public class SerializableAttribute : Attribute
     {
+    }
+
+    public class EnvironmentEx
+    {
+        public unsafe static bool Is64BitProcess
+        {
+            get
+            {
+                return sizeof(IntPtr) == 8;
+            }
+        }
     }
 }
 
@@ -40,6 +53,23 @@ namespace System.Reflection
 
     public static class NetCoreReflectionHelpers
     {
+        public static Type GetInterface(this Type type, string fullInterfaceName)
+        {
+            var interfaces = type.GetInterfaces();
+            return interfaces.SingleOrDefault(t => t.FullName == fullInterfaceName);
+        }
+
+
+        public static bool IsAssignableFrom(this Type t, Type other)
+        {
+            return t.GetTypeInfo().IsAssignableFrom(other.GetTypeInfo());
+        }
+
+        public static bool IsAssignableFrom(this TypeInfo t, Type other)
+        {
+            return t.IsAssignableFrom(other.GetTypeInfo());
+        }
+
         public static MemberTypes MemberType(this MemberInfo memberInfo)
         {
             Type t = memberInfo.GetType();
@@ -54,6 +84,10 @@ namespace System.Reflection
             else if (t == typeof(PropertyInfo))
             {
                 return MemberTypes.Property;
+            }
+            else
+            {
+                throw new NotImplementedException(); // Not sure any others are used.
             }
         }
     }

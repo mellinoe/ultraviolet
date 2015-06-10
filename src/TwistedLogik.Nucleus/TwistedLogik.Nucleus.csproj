@@ -84,7 +84,6 @@
     <Compile Include="MaskedUInt32.cs" />
     <Compile Include="MaskedUInt64.cs" />
     <Compile Include="Data\MersenneTwister.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SafeDispose.cs" />
     <Compile Include="Text\LocalizedString.cs" />
     <Compile Include="Text\LocalizedStringVariant.cs" />

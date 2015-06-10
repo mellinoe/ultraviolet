@@ -312,7 +312,7 @@ namespace TwistedLogik.Nucleus.Data
         /// <returns>The collection of objects that were loaded.</returns>
         protected virtual IEnumerable<T> LoadDefinitionsFromJson(String file)
         {
-            using (var sreader = new StreamReader(file))
+            using (var sreader = new StreamReader(File.OpenRead(file)))
             using (var jreader = new JsonTextReader(sreader))
             {
                 return ObjectLoader.LoadDefinitions<T>(JObject.Load(jreader), DataElementName, DefaultObjectClass);

@@ -30,17 +30,17 @@ namespace TwistedLogik.Nucleus.Text
             {
                 Reference = obj;
                 Value = 0;
-                Type = (obj == null) ? 0 : obj.GetType().TypeHandle.Value.ToInt64();
+                Type = (obj == null) ? null : obj.GetType();
             }
             public StringFormatterArgument(Type type, ulong value)
             {
                 Reference = null;
                 Value = value;
-                Type = type.TypeHandle.Value.ToInt64();
+                Type = type;
             }
             public readonly object Reference;
             public readonly ulong Value;
-            public readonly long Type;
+            public readonly Type Type;
         }
 
         /// <summary>
@@ -482,7 +482,7 @@ namespace TwistedLogik.Nucleus.Text
         [SecuritySafeCritical]
         private void AddArgumentHandler<T>(StringFormatterArgumentHandler handler)
         {
-            ArgumentHandlers[typeof(T).TypeHandle.Value.ToInt64()] = handler;
+            ArgumentHandlers[typeof(T)] = handler;
         }
 
         /// <summary>
@@ -766,7 +766,7 @@ namespace TwistedLogik.Nucleus.Text
         }
 
         // Formatter state.
-        private readonly Dictionary<Int64, StringFormatterArgumentHandler> ArgumentHandlers = new Dictionary<Int64, StringFormatterArgumentHandler>();
+        private readonly Dictionary<Type, StringFormatterArgumentHandler> ArgumentHandlers = new Dictionary<Type, StringFormatterArgumentHandler>();
         private readonly List<StringFormatterArgument> Arguments = new List<StringFormatterArgument>();
     }
 }

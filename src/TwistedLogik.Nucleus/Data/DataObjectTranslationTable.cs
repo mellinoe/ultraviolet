@@ -11,6 +11,7 @@ namespace TwistedLogik.Nucleus.Data
     [CLSCompliant(false)]
     public class DataObjectTranslationTable : Dictionary<UInt16, Guid>
     {
+#if !NETCORE
         /// <summary>
         /// Initializes a new instance of the DataObjectTranslationTable class from serialized data.
         /// </summary>
@@ -23,6 +24,7 @@ namespace TwistedLogik.Nucleus.Data
         {
 
         }
+#endif
 
         /// <summary>
         /// Gets a value indicating whether the specified local identifier in this translation

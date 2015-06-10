@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TwistedLogik.Nucleus.Text;
+using System.Reflection;
 
 namespace TwistedLogik.Nucleus
 {

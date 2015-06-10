@@ -8,6 +8,7 @@ using System.Threading;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace TwistedLogik.Nucleus.Data
 {
@@ -528,7 +529,7 @@ namespace TwistedLogik.Nucleus.Data
             
             // If we're loading a Nucleus data object, parse its unique key and ID.
             var argsBase = default(Object[]);
-            if (typeof(DataObject).IsAssignableFrom(type))
+            if (typeof(DataObject).GetTypeInfo().IsAssignableFrom(type))
             {
                 var objKey = element.AttributeValue<String>("Key");
                 if (String.IsNullOrEmpty(objKey))
@@ -547,7 +548,7 @@ namespace TwistedLogik.Nucleus.Data
 
             // Attempt to find the object class and make sure it's of the correct type.
             var objClass = Type.GetType(objClassName, false);
-            if (objClass == null || !type.IsAssignableFrom(objClass))
+            if (objClass == null || !type.GetTypeInfo().IsAssignableFrom(objClass))
                 throw new InvalidOperationException(NucleusStrings.DataObjectInvalidClass.Format(objClassName ?? "(null)", argsBase[0]));
             
             // Attempt to instantiate the object.
@@ -640,7 +641,7 @@ namespace TwistedLogik.Nucleus.Data
             if (complexType == null)
                 throw new InvalidOperationException(NucleusStrings.DataObjectInvalidType.Format(element.Name));
             
-            if (!baseType.IsAssignableFrom(complexType))
+            if (!baseType.GetTypeInfo().IsAssignableFrom(complexType))
                 throw new InvalidOperationException(NucleusStrings.DataObjectIncompatibleType.Format(element.Name));
             
             return complexType;
@@ -676,7 +677,7 @@ namespace TwistedLogik.Nucleus.Data
             while (typeCurrent != null)
             {
                 typeStack.Push(typeCurrent);
-                typeCurrent = typeCurrent.BaseType;
+                typeCurrent = typeCurrent.GetTypeInfo().BaseType;
             }
 
             // Populate the default values for the entire inheritance heirarchy.
@@ -834,12 +835,12 @@ namespace TwistedLogik.Nucleus.Data
             if (type == typeof(IList))
                 return true;
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IList<>))
+            if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(IList<>))
                 return true;
 
             var ifaces = type.GetInterfaces();
 
-            if (ifaces.Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>)))
+            if (ifaces.Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>)))
                 return true;
 
             if (ifaces.Any(x => x == typeof(IList)))
@@ -855,7 +856,7 @@ namespace TwistedLogik.Nucleus.Data
         /// <returns><c>true</c> if the specified type is an enumerable; otherwise, <c>false</c>.</returns>
         private static Boolean IsEnumerableType(Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+            return type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
         }
 
         /// <summary>
@@ -868,7 +869,7 @@ namespace TwistedLogik.Nucleus.Data
             if (listType == typeof(IList))
                 return typeof(ArrayList);
 
-            if (listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(IList<>))
+            if (listType.GetTypeInfo().IsGenericType && listType.GetGenericTypeDefinition() == typeof(IList<>))
                 return typeof(List<>).MakeGenericType(listType.GetGenericArguments()[0]);
 
             return listType;
@@ -885,12 +886,12 @@ namespace TwistedLogik.Nucleus.Data
             if (listType == typeof(IList))
                 return typeof(Object);
 
-            if (listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(IList<>))
+            if (listType.GetTypeInfo().IsGenericType && listType.GetGenericTypeDefinition() == typeof(IList<>))
                 return listType.GetGenericArguments()[0];
 
             var ifaces = listType.GetInterfaces();
 
-            var listImpls = ifaces.Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
+            var listImpls = ifaces.Where(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
             if (listImpls.Count() > 1)
             {
                 throw new InvalidOperationException(NucleusStrings.MemberImplementsMultipleListImpls.Format(name));

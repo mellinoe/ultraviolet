@@ -36,8 +36,19 @@ namespace TwistedLogik.Nucleus.Data
             {
                 if (String.IsNullOrEmpty((String)value))
                     return default(T);
-
+#if NETCORE
+                Type type;
+                if (context == null)
+                {
+                    type = typeof(T);
+                }
+                else
+                {
+                    throw new NotImplementedException("PropertyDescriptor is stubbed out.");
+                }
+#else
                 var type = (context == null) ? typeof(T) : context.PropertyDescriptor.PropertyType;
+#endif
                 return ObjectResolver.FromString((String)value, type);
             }
             return base.ConvertFrom(context, culture, value);

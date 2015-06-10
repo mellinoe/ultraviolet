@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -53,7 +54,7 @@ namespace TwistedLogik.Nucleus.Data
 		/// <returns>The object that was created.</returns>
 		public static Object FromString(String value, Type type)
 		{
-			return FromString(value, type, Thread.CurrentThread.CurrentCulture, false);
+			return FromString(value, type, CultureInfo.CurrentCulture, false);
 		}
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace TwistedLogik.Nucleus.Data
         /// <returns>The object that was created.</returns>
         public static Object FromString(String value, Type type, Boolean ignoreCase)
         {
-            return FromString(value, type, Thread.CurrentThread.CurrentCulture, ignoreCase);
+            return FromString(value, type, CultureInfo.CurrentCulture, ignoreCase);
         }
         
 		/// <summary>
@@ -109,7 +110,7 @@ namespace TwistedLogik.Nucleus.Data
 					throw new FormatException();
 				return value[0];
 			}
-			if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+			if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
 			{
 				if (value == null)
 					return null;
@@ -124,7 +125,7 @@ namespace TwistedLogik.Nucleus.Data
 			}
 
 			// Handle enumerations.
-			if (type.IsEnum)
+			if (type.GetTypeInfo().IsEnum)
 			{
 				return ParseEnum(type, value, ignoreCase);
 			}
@@ -176,7 +177,7 @@ namespace TwistedLogik.Nucleus.Data
 		{
 			Contract.Require(type, "type");
 			Contract.Require(value, "value");
-			Contract.Ensure<ArgumentException>(type.IsEnum, "type");
+			Contract.Ensure<ArgumentException>(type.GetTypeInfo().IsEnum, "type");
 
 			if (value == String.Empty)
 				throw new FormatException();
@@ -206,7 +207,11 @@ namespace TwistedLogik.Nucleus.Data
 			MethodInfo method;
 			if (!cachedCultureAwareParse.TryGetValue(type, out method))
 			{
+#if NETCORE
+                method = type.GetMethod("Parse", new Type[] { typeof(String), typeof(IFormatProvider) });
+#else
 				method = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(String), typeof(IFormatProvider) }, null);
+#endif
 				cachedCultureAwareParse[type] = method;
 			}
 
@@ -235,7 +240,11 @@ namespace TwistedLogik.Nucleus.Data
 			MethodInfo method;
 			if (!cachedCultureIgnorantParse.TryGetValue(type, out method))
 			{
-				method = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(String) }, null);
+#if NETCORE
+				method = type.GetMethod("Parse", new Type[] { typeof(String) });
+#else
+                method = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new Type[] { typeof(String) }, null);
+#endif
 				cachedCultureIgnorantParse[type] = method;
 			}
 
@@ -265,10 +274,10 @@ namespace TwistedLogik.Nucleus.Data
         {
             dataObjectType = null;
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
+            if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {
                 dataObjectType = type.GetGenericArguments()[0];
-                if (typeof(DataObject).IsAssignableFrom(dataObjectType))
+                if (typeof(DataObject).GetTypeInfo().IsAssignableFrom(dataObjectType.GetTypeInfo()))
                 {
                     return true;
                 }

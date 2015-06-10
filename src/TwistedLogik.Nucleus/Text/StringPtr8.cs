@@ -98,7 +98,7 @@ namespace TwistedLogik.Nucleus.Text
         [SecuritySafeCritical]
         public override String ToString()
         {
-            unsafe { return new String((sbyte*)ptr, 0, length); }
+            unsafe { return new String((char*)ptr, 0, length); }
         }
 
         /// <summary>
