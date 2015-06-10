@@ -817,7 +817,7 @@ namespace TwistedLogik.Ultraviolet
                     case UltravioletPlatform.Windows:
                     case UltravioletPlatform.Linux:
 #if NETCORE
-                        shim = Assembly.Load(new AssemblyName("TwistedLogik.Ultraviolet.Desktop"));
+                        shim = Assembly.Load(new AssemblyName("TwistedLogik.Ultraviolet.Desktop") { Version= new Version("999.999.999.999") });
 #else
                         shim = Assembly.LoadFrom("TwistedLogik.Ultraviolet.Desktop.dll");
 #endif

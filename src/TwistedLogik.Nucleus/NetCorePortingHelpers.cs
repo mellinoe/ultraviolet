@@ -68,21 +68,24 @@ namespace System.Reflection
         public static MemberTypes MemberType(this MemberInfo memberInfo)
         {
             Type t = memberInfo.GetType();
-            if (t == typeof(FieldInfo))
+            if (typeof(FieldInfo).IsAssignableFrom(t))
             {
                 return MemberTypes.Field;
             }
-            else if (t == typeof(MethodInfo))
+            else if (typeof(MethodInfo).IsAssignableFrom(t))
             {
                 return MemberTypes.Method;
             }
-            else if (t == typeof(PropertyInfo))
+            else if (typeof(PropertyInfo).IsAssignableFrom(t))
             {
                 return MemberTypes.Property;
             }
-            else
+            else if (typeof(ConstructorInfo).IsAssignableFrom(t))
             {
-                throw new NotImplementedException(); // Not sure any others are used.
+                return MemberTypes.Constructor;
+            }
+            {
+                throw new NotImplementedException("Unsupported: " + t); // Not sure any others are used.
             }
         }
     }

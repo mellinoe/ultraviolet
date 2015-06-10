@@ -50,8 +50,8 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation
 #endif
             miNullableEquals = typeof(Nullable).GetMethods().Where(x => x.Name == "Equals" && x.IsGenericMethod).Single();
 #if NETCORE
-            miCreateSimpleGet = typeof(BindingExpressions).GetMethod("CreateGetterForSimpleDependencyProperty", new[] { typeof(DependencyProperty) });
-            miCreateSimpleSet = typeof(BindingExpressions).GetMethod("CreateSetterForSimpleDependencyProperty", new[] { typeof(DependencyProperty) });
+            miCreateSimpleGet = typeof(BindingExpressions).GetMethod("CreateGetterForSimpleDependencyProperty", BindingFlags.NonPublic | BindingFlags.Static);
+            miCreateSimpleSet = typeof(BindingExpressions).GetMethod("CreateSetterForSimpleDependencyProperty", BindingFlags.NonPublic | BindingFlags.Static);
 #else
             miCreateSimpleGet = typeof(BindingExpressions).GetMethod("CreateGetterForSimpleDependencyProperty", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(DependencyProperty) }, null);
             miCreateSimpleSet = typeof(BindingExpressions).GetMethod("CreateSetterForSimpleDependencyProperty", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(DependencyProperty) }, null);
