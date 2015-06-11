@@ -27,4 +27,6 @@ if exist %runtimedir%\CoreRun.exe (
 )
 
 :InvokeExe
-%runtimedir%\CoreRun.exe %runtimedir%\%exename%.exe %remainder%
+pushd %runtimedir%
+CoreRun.exe %exename%.exe %remainder%
+popd

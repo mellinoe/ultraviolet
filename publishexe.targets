@@ -31,7 +31,9 @@
       </PublishedRuntimeItems>
 
       <PublishedRuntimeItems Include="@(None)">
-        <DestinationRelativePath>%(Filename)%(Extension)</DestinationRelativePath>
+        <DestinationRelativePath Condition="'%(None.NuGetPackageName)' != ''">%(Filename)%(Extension)</DestinationRelativePath>
+        <DestinationRelativePath Condition="'%(None.NuGetPackageName)' == ''">%(Identity)</DestinationRelativePath>
+        <DestinationRelativePath Condition="'%(None.Link)' != ''">%(None.Link)</DestinationRelativePath>
       </PublishedRuntimeItems>
     </ItemGroup>
 

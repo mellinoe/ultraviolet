@@ -35,6 +35,7 @@
     <ProjectDir>$(MSBuildThisFileDirectory)</ProjectDir>
     <SourceDir>$(ProjectDir)src/</SourceDir>
     <RefsDir>$(MSBuildThisFileDirectory)refs</RefsDir>
+    <DepsDir>$(MSBuildThisFileDirectory)dependencies</DepsDir>
 
     <!-- Output directories -->
     <BinDir Condition="'$(BinDir)'==''">$(ProjectDir)bin/</BinDir>

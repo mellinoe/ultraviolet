@@ -89,5 +89,33 @@
       <Name>TwistedLogik.Ultraviolet</Name>
     </ProjectReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(DepsDir)\x64\win32nt\bass.dll">
+      <Link>x64\win32nt\bass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(DepsDir)\x64\win32nt\bass_fx.dll">
+      <Link>x64\win32nt\bass_fx.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(DepsDir)\x64\win32nt\SDL2.dll">
+      <Link>x64\win32nt\SDL2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(DepsDir)\x86\win32nt\bass.dll">
+      <Link>x86\win32nt\bass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(DepsDir)\x86\win32nt\bass_fx.dll">
+      <Link>x86\win32nt\bass_fx.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(DepsDir)\x86\win32nt\SDL2.dll">
+      <Link>x86\win32nt\SDL2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
