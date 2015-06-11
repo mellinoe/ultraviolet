@@ -54,6 +54,16 @@ namespace TwistedLogik.Ultraviolet.UI.Presentation.Controls
             get { return GetValue<Boolean>(HasContentProperty); }
         }
 
+#if NETCORE
+        static ContentControl()
+        {
+            // * Force static constructor call *
+
+            // There seems to be a bug (?) in CoreCLR which is causing the type constructor for this class to never be called,
+            // and therefore the DependencyProperty's below never get registered and cause exceptions later when they are queried.
+        }
+#endif
+
         /// <summary>
         /// Identifies the <see cref="Content"/> dependency property.
         /// </summary>
